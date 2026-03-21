@@ -905,7 +905,7 @@ function addManual() {
 function addCD(data) {
   if (data.barcode && catalogue.some(cd => cd.barcode === data.barcode)) {
     const existing = catalogue.find(c => c.barcode === data.barcode);
-    toast(`Already in collection: ${existing.artist} — ${existing.title}`, 'error');
+    toast('CD Already in Collection!', 'error');
     return;
   }
   catalogue.push({

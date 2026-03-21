@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,6 @@
     --bg: #0e0e0e;
     --surface: #161616;
     --surface2: #1f1f1f;
-    --surface3: #252525;
     --border: #2a2a2a;
     --border2: #383838;
     --accent: #e8c547;
@@ -420,6 +419,33 @@
   .toast.success { border-color: var(--success); color: var(--success); }
   .toast.error   { border-color: var(--danger);  color: var(--danger);  }
 
+  /* ── LOCATION BAR ── */
+  .location-bar {
+    display: flex; align-items: center; gap: 0.6rem;
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 0.6rem 0.9rem;
+    margin-bottom: 1rem;
+  }
+  .location-bar label {
+    font-size: 0.72rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+  .location-bar input {
+    background: var(--surface); border: 1px solid var(--border2);
+    color: var(--accent); font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 500; letter-spacing: 0.08em;
+    padding: 0.3rem 0.6rem; border-radius: 6px; outline: none;
+    width: 80px; text-transform: uppercase; transition: border 0.15s;
+  }
+  .location-bar input:focus { border-color: var(--accent); }
+  .location-bar input::placeholder { color: var(--border2); font-weight: 300; }
+  .location-bar .loc-hint {
+    font-size: 0.75rem; color: var(--muted); flex: 1;
+  }
+
+
   @media (max-width: 500px) {
     h1 { font-size: 1.7rem; }
     .form-row { grid-template-columns: 1fr; }
@@ -486,6 +512,11 @@
       <div class="scanner-area">
         <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Point your camera at the barcode on the back of the CD case, or type it below.</p>
         <div id="scanner-viewport"><div class="scan-line"></div></div>
+        <div class="location-bar" style="margin-bottom:0.75rem;">
+          <label>📍 Shelf</label>
+          <input type="text" id="scan-location" placeholder="e.g. A2" maxlength="6" oninput="syncLocation(this.value)">
+          <span class="loc-hint">Set once, applies to all scans until changed</span>
+        </div>
         <div style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;">
           <button class="btn-primary" id="scan-btn" onclick="startScanner()">Start Camera</button>
           <button class="btn-secondary" id="stop-btn" onclick="stopScanner()" style="display:none">Stop</button>
@@ -532,6 +563,10 @@
       <div class="form-group">
         <label>Barcode (optional)</label>
         <input type="text" id="m-barcode" placeholder="13-digit barcode">
+      </div>
+      <div class="form-group">
+        <label>Shelf / Location</label>
+        <input type="text" id="m-location" placeholder="e.g. A2" maxlength="6" style="text-transform:uppercase;" oninput="syncLocation(this.value)">
       </div>
       <button class="btn-primary" onclick="addManual()">Add to Collection</button>
     </div>
@@ -589,6 +624,10 @@
       <label>Barcode</label>
       <input type="text" id="edit-barcode" placeholder="13-digit barcode">
     </div>
+    <div class="form-group">
+      <label>Shelf / Location</label>
+      <input type="text" id="edit-location" placeholder="e.g. A2" maxlength="6" style="text-transform:uppercase;">
+    </div>
     <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
       <button class="btn-primary teal" onclick="saveEdit()">Save Changes</button>
       <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
@@ -604,6 +643,7 @@ const STORAGE_KEY = 'cd_catalogue_v1';
 let catalogue = [];
 let pendingLookup = null;
 let scannerRunning = false;
+let stickyLocation = '';
 
 function load() {
   try { catalogue = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
@@ -641,6 +681,15 @@ function toast(msg, type = '') {
   el._t = setTimeout(() => el.classList.remove('show'), 3200);
 }
 
+function syncLocation(val) {
+  stickyLocation = val.toUpperCase();
+  // Keep both location fields in sync
+  const scanEl   = document.getElementById('scan-location');
+  const manualEl = document.getElementById('m-location');
+  if (scanEl   && scanEl.value.toUpperCase()   !== stickyLocation) scanEl.value   = stickyLocation;
+  if (manualEl && manualEl.value.toUpperCase() !== stickyLocation) manualEl.value = stickyLocation;
+}
+
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -651,7 +700,7 @@ function renderCatalogue() {
   const sort = document.getElementById('sort-select').value;
 
   let items = catalogue.filter(cd =>
-    !q || cd.artist.toLowerCase().includes(q) || cd.title.toLowerCase().includes(q)
+    !q || cd.artist.toLowerCase().includes(q) || cd.title.toLowerCase().includes(q) || (cd.location||'').toLowerCase().includes(q)
   );
   items.sort((a,b) => {
     if (sort==='artist') return a.artist.localeCompare(b.artist) || a.title.localeCompare(b.title);
@@ -720,7 +769,8 @@ function openEditModal(id) {
   document.getElementById('edit-title').value  = cd.title;
   document.getElementById('edit-year').value   = cd.year   || '';
   document.getElementById('edit-label').value  = cd.label  || '';
-  document.getElementById('edit-barcode').value= cd.barcode|| '';
+  document.getElementById('edit-barcode').value  = cd.barcode  || '';
+  document.getElementById('edit-location').value = cd.location || '';
   document.getElementById('edit-modal').classList.add('open');
 }
 
@@ -740,7 +790,8 @@ function saveEdit() {
   cd.title   = title;
   cd.year    = document.getElementById('edit-year').value.trim();
   cd.label   = document.getElementById('edit-label').value.trim();
-  cd.barcode = document.getElementById('edit-barcode').value.trim();
+  cd.barcode  = document.getElementById('edit-barcode').value.trim();
+  cd.location = document.getElementById('edit-location').value.trim().toUpperCase();
   save(); renderCatalogue();
   document.getElementById('edit-modal').classList.remove('open');
   toast('Changes saved', 'success');
@@ -823,7 +874,8 @@ async function fetchMusicBrainz(barcode) {
   const r = json.releases[0];
   const artist = r['artist-credit'] ? r['artist-credit'].map(a => a.name||(a.artist&&a.artist.name)||'').filter(Boolean).join(', ') : '';
   const year   = r.date ? r.date.substring(0,4) : '';
-  const label  = r['label-info']?.[0]?.label?.name || '';
+  const labelInfo = r['label-info'];
+  const label = (labelInfo && labelInfo[0] && labelInfo[0].label) ? labelInfo[0].label.name : '';
   if (!artist && !r.title) return null;
   return { artist: artist||'Unknown Artist', title: r.title||'Unknown Title', year, label };
 }
@@ -833,7 +885,7 @@ async function fetchUPCitemdb(barcode) {
     const resp = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`);
     if (!resp.ok) return null;
     const json = await resp.json();
-    if (!json.items?.length) return null;
+    if (!json.items || !json.items.length) return null;
     const item = json.items[0];
     let artist = item.brand || '';
     let title  = item.title || '';
@@ -865,7 +917,7 @@ function showScanResult(msg, success) {
 
 function confirmLookup() {
   if (!pendingLookup) return;
-  addCD(pendingLookup); pendingLookup = null;
+  addCD({ ...pendingLookup, location: stickyLocation }); pendingLookup = null;
   document.getElementById('lookup-confirm').style.display = 'none';
   document.getElementById('barcode-input').value = '';
   document.getElementById('scan-result').className = 'scan-result';
@@ -877,7 +929,8 @@ function editLookup() {
   document.getElementById('m-title').value   = pendingLookup.title   || '';
   document.getElementById('m-year').value    = pendingLookup.year    || '';
   document.getElementById('m-label').value   = pendingLookup.label   || '';
-  document.getElementById('m-barcode').value = pendingLookup.barcode || '';
+  document.getElementById('m-barcode').value   = pendingLookup.barcode  || '';
+  document.getElementById('m-location').value  = stickyLocation;
   document.querySelectorAll('.add-tab')[1].click();
   switchAddTab('manual', document.querySelectorAll('.add-tab')[1]);
   pendingLookup = null;
@@ -896,26 +949,29 @@ function addManual() {
   const title   = document.getElementById('m-title').value.trim();
   const year    = document.getElementById('m-year').value.trim();
   const label   = document.getElementById('m-label').value.trim();
-  const barcode = document.getElementById('m-barcode').value.trim();
+  const barcode  = document.getElementById('m-barcode').value.trim();
+  const location = document.getElementById('m-location').value.trim().toUpperCase();
   if (!artist || !title) { toast('Artist and title are required', 'error'); return; }
-  addCD({ artist, title, year, label, barcode });
+  if (location) syncLocation(location);
+  addCD({ artist, title, year, label, barcode, location });
   ['m-artist','m-title','m-year','m-label','m-barcode'].forEach(id => document.getElementById(id).value = '');
+  // Keep location sticky — don't clear it
 }
 
 function addCD(data) {
   if (data.barcode && catalogue.some(cd => cd.barcode === data.barcode)) {
-    const existing = catalogue.find(c => c.barcode === data.barcode);
     toast('CD Already in Collection!', 'error');
     return;
   }
   catalogue.push({
-    id:      Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-    artist:  data.artist,
-    title:   data.title,
-    year:    data.year   || '',
-    label:   data.label  || '',
-    barcode: data.barcode|| '',
-    added:   Date.now()
+    id:       Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    artist:   data.artist,
+    title:    data.title,
+    year:     data.year     || '',
+    label:    data.label    || '',
+    barcode:  data.barcode  || '',
+    location: data.location || '',
+    added:    Date.now()
   });
   save();
   toast(`Added: ${data.artist} — ${data.title}`, 'success');

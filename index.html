@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,488 +9,421 @@
 <style>
   :root {
     --bg: #0e0e0e;
-    --surface: #181818;
-    --surface2: #222222;
-    --border: #2e2e2e;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --surface3: #252525;
+    --border: #2a2a2a;
+    --border2: #383838;
     --accent: #e8c547;
     --accent2: #c4a832;
+    --accent-dim: rgba(232,197,71,0.12);
+    --teal: #4ecdc4;
+    --teal-dim: rgba(78,205,196,0.12);
+    --purple: #b39ddb;
+    --purple-dim: rgba(179,157,219,0.12);
+    --coral: #ff8a65;
+    --coral-dim: rgba(255,138,101,0.12);
     --text: #f0ece0;
-    --muted: #888880;
+    --text2: #c8c4b8;
+    --muted: #777770;
     --danger: #e05555;
+    --danger-dim: rgba(224,85,85,0.1);
     --success: #5aad7a;
+    --success-dim: rgba(90,173,122,0.12);
   }
 
-- { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-background: var(–bg);
-color: var(–text);
-font-family: ‘DM Sans’, sans-serif;
-font-weight: 300;
-min-height: 100vh;
-overflow-x: hidden;
-}
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-/* Subtle grain overlay */
-body::before {
-content: ‘’;
-position: fixed;
-inset: 0;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 200 200’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’ opacity=‘0.04’/%3E%3C/svg%3E”);
-background-size: 200px;
-pointer-events: none;
-z-index: 1000;
-opacity: 0.4;
-}
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.35;
+  }
 
-header {
-padding: 2rem 1.5rem 1rem;
-border-bottom: 1px solid var(–border);
-display: flex;
-align-items: flex-end;
-justify-content: space-between;
-gap: 1rem;
-flex-wrap: wrap;
-}
+  /* ── HEADER ── */
+  header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    background: linear-gradient(180deg, #141414 0%, var(--bg) 100%);
+  }
 
-.logo {
-display: flex;
-align-items: flex-end;
-gap: 0.75rem;
-}
+  .logo { display: flex; align-items: center; gap: 0.75rem; }
 
-.disc-icon {
-width: 44px;
-height: 44px;
-border-radius: 50%;
-background: conic-gradient(from 0deg, #333 0%, #555 15%, #222 30%, #444 50%, #222 65%, #555 80%, #333 100%);
-position: relative;
-flex-shrink: 0;
-box-shadow: 0 0 0 2px var(–accent), 0 0 20px rgba(232,197,71,0.15);
-animation: spin 8s linear infinite;
-}
-.disc-icon::after {
-content: ‘’;
-position: absolute;
-top: 50%; left: 50%;
-transform: translate(-50%,-50%);
-width: 10px; height: 10px;
-border-radius: 50%;
-background: var(–bg);
-border: 2px solid var(–accent);
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+  .disc-icon {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #2a2a2a 0%, #444 15%, #1a1a1a 30%, #3a3a3a 50%, #1a1a1a 65%, #444 80%, #2a2a2a 100%);
+    position: relative; flex-shrink: 0;
+    box-shadow: 0 0 0 2px var(--accent), 0 0 24px rgba(232,197,71,0.2);
+    animation: spin 8s linear infinite;
+  }
+  .disc-icon::after {
+    content: ''; position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 10px; height: 10px;
+    border-radius: 50%; background: var(--bg); border: 2px solid var(--accent);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-h1 {
-font-family: ‘Bebas Neue’, sans-serif;
-font-size: 2.2rem;
-letter-spacing: 0.05em;
-color: var(–text);
-line-height: 1;
-}
-h1 span { color: var(–accent); }
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 0.05em; line-height: 1;
+  }
+  h1 span { color: var(--accent); }
 
-.header-count {
-font-size: 0.8rem;
-color: var(–muted);
-letter-spacing: 0.1em;
-text-transform: uppercase;
-padding-bottom: 4px;
-}
+  .header-count {
+    font-size: 0.78rem; color: var(--muted);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    padding: 0.3rem 0.75rem; border-radius: 20px;
+  }
 
-nav {
-display: flex;
-gap: 0.5rem;
-padding: 1rem 1.5rem;
-border-bottom: 1px solid var(–border);
-flex-wrap: wrap;
-}
+  /* ── NAV ── */
+  nav {
+    display: flex; gap: 0.4rem;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
 
-.nav-btn {
-background: none;
-border: 1px solid var(–border);
-color: var(–muted);
-padding: 0.45rem 1rem;
-border-radius: 2px;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 0.82rem;
-font-weight: 400;
-letter-spacing: 0.05em;
-cursor: pointer;
-transition: all 0.15s;
-text-transform: uppercase;
-}
-.nav-btn:hover { border-color: var(–accent); color: var(–accent); }
-.nav-btn.active { background: var(–accent); border-color: var(–accent); color: #000; font-weight: 500; }
-.nav-btn.danger { border-color: var(–danger); color: var(–danger); }
-.nav-btn.danger:hover { background: var(–danger); color: #fff; }
+  .nav-btn {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    padding: 0.45rem 1.1rem;
+    border-radius: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem; font-weight: 400;
+    letter-spacing: 0.04em;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .nav-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .nav-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 500; }
+  .nav-btn.danger { border-color: var(--danger); color: var(--danger); }
+  .nav-btn.danger:hover { background: var(--danger-dim); }
 
-main { padding: 1.5rem; max-width: 900px; }
+  main { padding: 1.25rem 1.5rem; max-width: 960px; }
 
-/* ── PANELS ── */
-.panel { display: none; }
-.panel.active { display: block; }
+  .panel { display: none; }
+  .panel.active { display: block; }
 
-/* Search bar */
-.search-wrap {
-margin-bottom: 1.5rem;
-display: flex;
-gap: 0.5rem;
-}
-.search-wrap input {
-flex: 1;
-background: var(–surface);
-border: 1px solid var(–border);
-color: var(–text);
-padding: 0.6rem 0.9rem;
-border-radius: 2px;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 0.9rem;
-outline: none;
-transition: border 0.15s;
-}
-.search-wrap input:focus { border-color: var(–accent); }
-.search-wrap input::placeholder { color: var(–muted); }
+  /* ── SEARCH & SORT ── */
+  .search-wrap {
+    display: flex; gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .search-wrap input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 0.6rem 1rem; border-radius: 20px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border 0.15s, box-shadow 0.15s;
+  }
+  .search-wrap input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-dim);
+  }
+  .search-wrap input::placeholder { color: var(--muted); }
 
-/* CD List */
-.cd-list {
-border: 1px solid var(–border);
-border-radius: 2px;
-overflow: hidden;
-}
+  .sort-row {
+    display: flex; gap: 0.5rem; align-items: center;
+    margin-bottom: 1rem; flex-wrap: wrap;
+  }
+  .sort-row label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .sort-row select {
+    background: var(--surface2); border: 1px solid var(--border2);
+    color: var(--text2); padding: 0.3rem 0.75rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    border-radius: 20px; outline: none; cursor: pointer;
+  }
+  .sort-row select option { background: var(--surface2); }
 
-.cd-list-header {
-display: grid;
-grid-template-columns: 1fr 1fr 80px 80px 36px;
-background: var(–surface2);
-border-bottom: 1px solid var(–border);
-padding: 0.5rem 1rem;
-}
-.cd-list-header span {
-font-size: 0.7rem;
-color: var(–muted);
-text-transform: uppercase;
-letter-spacing: 0.1em;
-}
+  /* ── CD LIST ── */
+  .cd-list {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+  }
 
-.cd-row {
-display: grid;
-grid-template-columns: 1fr 1fr 80px 80px 36px;
-padding: 0.65rem 1rem;
-border-bottom: 1px solid var(–border);
-align-items: center;
-transition: background 0.12s;
-}
-.cd-row:last-child { border-bottom: none; }
-.cd-row:hover { background: var(–surface2); }
+  .cd-list-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 72px 100px 72px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 1rem 0.5rem 1.25rem;
+  }
+  .cd-list-header span {
+    font-size: 0.68rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
 
-.cd-row-artist {
-font-size: 0.82rem;
-color: var(–accent);
-font-weight: 500;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-padding-right: 0.75rem;
-}
-.cd-row-title {
-font-size: 0.88rem;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-padding-right: 0.75rem;
-}
-.cd-row-year, .cd-row-label {
-font-size: 0.78rem;
-color: var(–muted);
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-padding-right: 0.5rem;
-}
+  .cd-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 72px 100px 72px;
+    padding: 0.7rem 1rem 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background 0.12s;
+    border-left: 3px solid transparent;
+  }
+  .cd-row:last-child { border-bottom: none; }
+  .cd-row:hover { background: var(--surface2); }
 
-.cd-row-del {
-background: none;
-border: none;
-color: var(–border);
-cursor: pointer;
-font-size: 1.1rem;
-line-height: 1;
-padding: 4px 6px;
-border-radius: 2px;
-transition: all 0.12s;
-justify-self: end;
-}
-.cd-row:hover .cd-row-del { color: var(–danger); }
-.cd-row-del:hover { background: rgba(224,85,85,0.12); }
+  /* Rotating accent colours on left border */
+  .cd-row:nth-child(5n+1) { border-left-color: var(--accent); }
+  .cd-row:nth-child(5n+2) { border-left-color: var(--teal); }
+  .cd-row:nth-child(5n+3) { border-left-color: var(--purple); }
+  .cd-row:nth-child(5n+4) { border-left-color: var(--coral); }
+  .cd-row:nth-child(5n+5) { border-left-color: var(--success); }
 
-@media (max-width: 540px) {
-.cd-list-header { grid-template-columns: 1fr 1fr 36px; }
-.cd-list-header .col-year, .cd-list-header .col-label { display: none; }
-.cd-row { grid-template-columns: 1fr 1fr 36px; }
-.cd-row-year, .cd-row-label { display: none; }
-}
+  .cd-row-artist {
+    font-size: 0.83rem; font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding: 0 0.5rem 0 0.85rem;
+  }
+  /* Matching artist text colours */
+  .cd-row:nth-child(5n+1) .cd-row-artist { color: var(--accent); }
+  .cd-row:nth-child(5n+2) .cd-row-artist { color: var(--teal); }
+  .cd-row:nth-child(5n+3) .cd-row-artist { color: var(--purple); }
+  .cd-row:nth-child(5n+4) .cd-row-artist { color: var(--coral); }
+  .cd-row:nth-child(5n+5) .cd-row-artist { color: var(--success); }
 
-.empty-state {
-text-align: center;
-padding: 4rem 1rem;
-color: var(–muted);
-}
-.empty-state .big { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+  .cd-row-title {
+    font-size: 0.88rem; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding-right: 0.5rem;
+  }
+  .cd-row-year {
+    font-size: 0.78rem; color: var(--muted);
+    padding-right: 0.5rem;
+  }
+  .cd-row-label {
+    font-size: 0.75rem; color: var(--text2);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    padding-right: 0.5rem;
+  }
 
-/* ── ADD PANEL ── */
-.add-tabs {
-display: flex;
-gap: 0;
-margin-bottom: 1.5rem;
-border-bottom: 1px solid var(–border);
-}
-.add-tab {
-background: none;
-border: none;
-color: var(–muted);
-padding: 0.6rem 1.5rem;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 0.85rem;
-letter-spacing: 0.05em;
-text-transform: uppercase;
-cursor: pointer;
-border-bottom: 2px solid transparent;
-margin-bottom: -1px;
-transition: all 0.15s;
-}
-.add-tab:hover { color: var(–text); }
-.add-tab.active { color: var(–accent); border-bottom-color: var(–accent); }
+  .cd-row-actions {
+    display: flex; gap: 4px; justify-content: flex-end; padding-right: 0.5rem;
+  }
+  .cd-row-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 0.85rem; padding: 4px 6px; border-radius: 4px;
+    transition: all 0.12s; opacity: 0.3;
+  }
+  .cd-row:hover .cd-row-btn { opacity: 1; }
+  .cd-row-btn.edit:hover { background: var(--teal-dim); color: var(--teal); }
+  .cd-row-btn.del:hover  { background: var(--danger-dim); color: var(--danger); }
 
-.add-sub { display: none; }
-.add-sub.active { display: block; }
+  @media (max-width: 580px) {
+    .cd-list-header { grid-template-columns: 1fr 1fr 60px; }
+    .cd-list-header .col-year, .cd-list-header .col-label { display: none; }
+    .cd-row { grid-template-columns: 1fr 1fr 60px; }
+    .cd-row-year, .cd-row-label { display: none; }
+  }
 
-/* Scanner */
-.scanner-area {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 2px;
-padding: 1.5rem;
-text-align: center;
-}
-#scanner-viewport {
-position: relative;
-width: 100%;
-max-width: 400px;
-margin: 0 auto 1rem;
-display: none;
-overflow: hidden;
-border: 1px solid var(–accent);
-}
-#scanner-viewport video { width: 100%; display: block; }
-#scanner-viewport canvas { display: none; }
-.scan-line {
-position: absolute;
-left: 0; right: 0;
-height: 2px;
-background: var(–accent);
-animation: scanline 2s ease-in-out infinite;
-box-shadow: 0 0 8px var(–accent);
-}
-@keyframes scanline {
-0%, 100% { top: 10%; }
-50% { top: 85%; }
-}
+  .empty-state {
+    text-align: center; padding: 4rem 1rem; color: var(--muted);
+  }
+  .empty-state .big { font-size: 3rem; margin-bottom: 1rem; opacity: 0.25; }
 
-.barcode-manual {
-display: flex;
-gap: 0.5rem;
-max-width: 400px;
-margin: 1rem auto 0;
-}
+  /* ── EDIT MODAL ── */
+  .modal-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); z-index: 500;
+    align-items: flex-end; justify-content: center;
+  }
+  .modal-backdrop.open { display: flex; }
 
-.scan-result {
-margin-top: 1rem;
-padding: 0.75rem 1rem;
-background: var(–surface2);
-border: 1px solid var(–border);
-border-radius: 2px;
-font-size: 0.85rem;
-display: none;
-}
-.scan-result.show { display: block; }
-.scan-result.success { border-color: var(–success); }
-.scan-result.error { border-color: var(–danger); color: var(–danger); }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px 16px 0 0;
+    padding: 1.5rem;
+    width: 100%; max-width: 540px;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(60px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-/* Form */
-.form-group { margin-bottom: 1rem; }
-.form-group label {
-display: block;
-font-size: 0.75rem;
-color: var(–muted);
-text-transform: uppercase;
-letter-spacing: 0.1em;
-margin-bottom: 0.4rem;
-}
-.form-group input, .form-group select {
-width: 100%;
-background: var(–surface);
-border: 1px solid var(–border);
-color: var(–text);
-padding: 0.6rem 0.9rem;
-border-radius: 2px;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 0.9rem;
-outline: none;
-transition: border 0.15s;
-}
-.form-group input:focus, .form-group select:focus { border-color: var(–accent); }
-.form-group select option { background: var(–surface2); }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 0.05em;
+    color: var(--teal); margin-bottom: 1.25rem;
+  }
 
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  /* ── ADD PANEL ── */
+  .add-tabs {
+    display: flex; gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .add-tab {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    padding: 0.55rem 1.25rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    letter-spacing: 0.03em; cursor: pointer;
+    border-radius: 20px; transition: all 0.15s;
+  }
+  .add-tab:hover { color: var(--text); border-color: var(--border2); }
+  .add-tab.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-.btn-primary {
-background: var(–accent);
-color: #000;
-border: none;
-padding: 0.65rem 1.5rem;
-font-family: ‘DM Sans’, sans-serif;
-font-weight: 500;
-font-size: 0.85rem;
-letter-spacing: 0.08em;
-text-transform: uppercase;
-cursor: pointer;
-border-radius: 2px;
-transition: background 0.15s;
-}
-.btn-primary:hover { background: var(–accent2); }
-.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .add-sub { display: none; }
+  .add-sub.active { display: block; }
 
-.btn-secondary {
-background: none;
-color: var(–text);
-border: 1px solid var(–border);
-padding: 0.6rem 1.2rem;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 0.82rem;
-letter-spacing: 0.05em;
-text-transform: uppercase;
-cursor: pointer;
-border-radius: 2px;
-transition: all 0.15s;
-}
-.btn-secondary:hover { border-color: var(–accent); color: var(–accent); }
+  /* Scanner */
+  .scanner-area {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 10px; padding: 1.5rem; text-align: center;
+  }
+  #scanner-viewport {
+    position: relative; width: 100%; max-width: 400px;
+    margin: 0 auto 1rem; display: none; overflow: hidden;
+    border: 2px solid var(--accent); border-radius: 8px;
+  }
+  #scanner-viewport video { width: 100%; display: block; }
+  #scanner-viewport canvas { display: none; }
+  .scan-line {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: var(--accent);
+    animation: scanline 2s ease-in-out infinite;
+    box-shadow: 0 0 8px var(--accent);
+  }
+  @keyframes scanline { 0%,100% { top: 10%; } 50% { top: 85%; } }
 
-/* Lookup result preview */
-.lookup-preview {
-background: var(–surface2);
-border: 1px solid var(–success);
-border-radius: 2px;
-padding: 1rem 1.2rem;
-margin-bottom: 1rem;
-display: none;
-}
-.lookup-preview.show { display: block; }
-.lookup-preview .lp-artist { color: var(–accent); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.2rem; }
-.lookup-preview .lp-title { font-size: 1.1rem; font-weight: 500; margin-bottom: 0.3rem; }
-.lookup-preview .lp-meta { font-size: 0.78rem; color: var(–muted); }
+  .barcode-manual {
+    display: flex; gap: 0.5rem; max-width: 400px; margin: 1rem auto 0;
+  }
 
-/* Data panel */
-.data-actions {
-display: flex;
-gap: 0.75rem;
-flex-wrap: wrap;
-margin-bottom: 1.5rem;
-}
+  .scan-result {
+    margin-top: 1rem; padding: 0.75rem 1rem;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; font-size: 0.85rem; display: none;
+  }
+  .scan-result.show { display: block; }
+  .scan-result.success { border-color: var(--success); color: var(--success); }
+  .scan-result.error   { border-color: var(--danger);  color: var(--danger);  }
 
-.data-info {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 2px;
-padding: 1rem 1.2rem;
-font-size: 0.85rem;
-color: var(–muted);
-margin-bottom: 1rem;
-}
-.data-info strong { color: var(–text); }
+  /* Forms */
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block; font-size: 0.72rem; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.4rem;
+  }
+  .form-group input {
+    width: 100%; background: var(--surface2);
+    border: 1px solid var(--border2); color: var(--text);
+    padding: 0.65rem 1rem; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border 0.15s, box-shadow 0.15s;
+  }
+  .form-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-.toast {
-position: fixed;
-bottom: 2rem;
-left: 50%;
-transform: translateX(-50%) translateY(80px);
-background: var(–surface2);
-border: 1px solid var(–accent);
-color: var(–text);
-padding: 0.75rem 1.5rem;
-border-radius: 2px;
-font-size: 0.85rem;
-z-index: 9999;
-transition: transform 0.3s ease;
-white-space: nowrap;
-}
-.toast.show { transform: translateX(-50%) translateY(0); }
-.toast.error { border-color: var(–danger); color: var(–danger); }
+  /* Lookup preview */
+  .lookup-preview {
+    background: var(--surface2); border: 1px solid var(--success);
+    border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1rem; display: none;
+  }
+  .lookup-preview.show { display: block; }
+  .lookup-preview .lp-artist { color: var(--teal); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+  .lookup-preview .lp-title  { font-size: 1.05rem; font-weight: 500; margin-bottom: 0.25rem; }
+  .lookup-preview .lp-meta   { font-size: 0.78rem; color: var(--muted); }
 
-.sort-row {
-display: flex;
-gap: 0.5rem;
-align-items: center;
-margin-bottom: 1rem;
-flex-wrap: wrap;
-}
-.sort-row label { font-size: 0.75rem; color: var(–muted); text-transform: uppercase; letter-spacing: 0.08em; }
-.sort-row select {
-background: var(–surface);
-border: 1px solid var(–border);
-color: var(–text);
-padding: 0.35rem 0.7rem;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 0.82rem;
-border-radius: 2px;
-outline: none;
-}
-.sort-row select option { background: var(–surface2); }
+  /* Buttons */
+  .btn-primary {
+    background: var(--accent); color: #000;
+    border: none; padding: 0.65rem 1.4rem;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    font-size: 0.85rem; letter-spacing: 0.05em;
+    cursor: pointer; border-radius: 8px; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-primary.teal { background: var(--teal); color: #000; }
+  .btn-primary.teal:hover { background: #3db8b0; }
 
-#loading-indicator {
-display: none;
-text-align: center;
-padding: 1rem;
-color: var(–muted);
-font-size: 0.85rem;
-}
-.spinner {
-display: inline-block;
-width: 16px; height: 16px;
-border: 2px solid var(–border);
-border-top-color: var(–accent);
-border-radius: 50%;
-animation: spin 0.7s linear infinite;
-vertical-align: middle;
-margin-right: 0.5rem;
-}
+  .btn-secondary {
+    background: var(--surface2); color: var(--text2);
+    border: 1px solid var(--border2); padding: 0.6rem 1.2rem;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    cursor: pointer; border-radius: 8px; transition: all 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--teal); color: var(--teal); }
 
-.btn-large {
-min-height: 48px;
-font-size: 0.9rem;
-padding: 0.75rem 1.5rem;
-width: 100%;
-max-width: 360px;
-display: block;
-margin-bottom: 0.5rem;
-}
+  .btn-large { min-height: 48px; font-size: 0.9rem; padding: 0.75rem 1.5rem; width: 100%; max-width: 360px; display: block; margin-bottom: 0.5rem; }
 
-.data-section-title {
-font-size: 0.72rem;
-text-transform: uppercase;
-letter-spacing: 0.12em;
-color: var(–muted);
-margin-bottom: 0.75rem;
-padding-bottom: 0.4rem;
-border-bottom: 1px solid var(–border);
-}
+  /* Data panel */
+  .data-section-title {
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); margin-bottom: 0.75rem; padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-info {
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-left: 3px solid var(--teal);
+    border-radius: 8px; padding: 0.9rem 1.1rem;
+    font-size: 0.83rem; color: var(--text2); margin-bottom: 1.5rem; line-height: 1.6;
+  }
 
-@media (max-width: 500px) {
-h1 { font-size: 1.7rem; }
-.form-row { grid-template-columns: 1fr; }
-}
+  /* Loading */
+  #loading-indicator {
+    display: none; text-align: center; padding: 1rem;
+    color: var(--muted); font-size: 0.85rem;
+  }
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid var(--border2); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+    vertical-align: middle; margin-right: 0.5rem;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface2); border: 1px solid var(--border2);
+    color: var(--text); padding: 0.7rem 1.4rem;
+    border-radius: 20px; font-size: 0.85rem; z-index: 9999;
+    transition: transform 0.3s ease; white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--success); color: var(--success); }
+  .toast.error   { border-color: var(--danger);  color: var(--danger);  }
+
+  @media (max-width: 500px) {
+    h1 { font-size: 1.7rem; }
+    .form-row { grid-template-columns: 1fr; }
+    main { padding: 1rem; }
+  }
 </style>
-
 </head>
 <body>
 
@@ -504,31 +436,30 @@ h1 { font-size: 1.7rem; }
 </header>
 
 <nav>
-  <button class="nav-btn active" onclick="showPanel('catalogue')">Collection</button>
-  <button class="nav-btn" onclick="showPanel('add')">+ Add CD</button>
-  <button class="nav-btn" onclick="showPanel('data')">Import / Export</button>
+  <button class="nav-btn active" onclick="showPanel('catalogue')">💿 Collection</button>
+  <button class="nav-btn" onclick="showPanel('add')">＋ Add CD</button>
+  <button class="nav-btn" onclick="showPanel('data')">⇅ Backup</button>
 </nav>
 
 <main>
 
-  <!-- ── CATALOGUE PANEL ── -->
-
+  <!-- ── CATALOGUE ── -->
   <div class="panel active" id="panel-catalogue">
     <div class="search-wrap">
-      <input type="text" id="search-input" placeholder="Search artist or title…" oninput="renderCatalogue()">
+      <input type="text" id="search-input" placeholder="🔍  Search artist or title…" oninput="renderCatalogue()">
     </div>
     <div class="sort-row">
-      <label>Sort by</label>
+      <label>Sort</label>
       <select id="sort-select" onchange="renderCatalogue()">
         <option value="artist">Artist A–Z</option>
         <option value="title">Title A–Z</option>
         <option value="year">Year</option>
-        <option value="added">Date Added</option>
+        <option value="added">Recently Added</option>
       </select>
     </div>
     <div class="cd-list" id="cd-list" style="display:none">
       <div class="cd-list-header">
-        <span>Artist</span>
+        <span style="padding-left:0.85rem">Artist</span>
         <span>Title</span>
         <span class="col-year">Year</span>
         <span class="col-label">Label</span>
@@ -542,107 +473,126 @@ h1 { font-size: 1.7rem; }
     </div>
   </div>
 
-  <!-- ── ADD PANEL ── -->
-
+  <!-- ── ADD ── -->
   <div class="panel" id="panel-add">
     <div class="add-tabs">
-      <button class="add-tab active" onclick="switchAddTab('scan')">📷 Scan Barcode</button>
-      <button class="add-tab" onclick="switchAddTab('manual')">✏️ Manual Entry</button>
+      <button class="add-tab active" onclick="switchAddTab('scan', this)">📷 Scan Barcode</button>
+      <button class="add-tab" onclick="switchAddTab('manual', this)">✏️ Manual Entry</button>
     </div>
 
-```
-<!-- SCAN SUB -->
-<div class="add-sub active" id="sub-scan">
-  <div class="scanner-area">
-    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Point your camera at the barcode on the back of the CD case, or type the barcode number below.</p>
-    <div id="scanner-viewport">
-      <div class="scan-line"></div>
+    <div class="add-sub active" id="sub-scan">
+      <div class="scanner-area">
+        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem;">Point your camera at the barcode on the back of the CD case, or type it below.</p>
+        <div id="scanner-viewport"><div class="scan-line"></div></div>
+        <div style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;">
+          <button class="btn-primary" id="scan-btn" onclick="startScanner()">Start Camera</button>
+          <button class="btn-secondary" id="stop-btn" onclick="stopScanner()" style="display:none">Stop</button>
+        </div>
+        <div style="color:var(--muted);font-size:0.8rem;margin-bottom:0.75rem;">— or enter barcode manually —</div>
+        <div class="barcode-manual">
+          <input type="text" id="barcode-input" placeholder="e.g. 5099748235626"
+            style="flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:0.65rem 1rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;"
+            onkeydown="if(event.key==='Enter')lookupBarcode()">
+          <button class="btn-primary" onclick="lookupBarcode()">Look Up</button>
+        </div>
+        <div id="loading-indicator"><span class="spinner"></span> Looking up barcode…</div>
+        <div class="scan-result" id="scan-result"></div>
+      </div>
+      <div id="lookup-confirm" style="display:none;margin-top:1.5rem;">
+        <div class="lookup-preview show" id="lookup-preview"></div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="confirmLookup()">Add to Collection</button>
+          <button class="btn-secondary" onclick="editLookup()">Edit Details</button>
+          <button class="btn-secondary" onclick="cancelLookup()">Cancel</button>
+        </div>
+      </div>
     </div>
-    <div style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;">
-      <button class="btn-primary" id="scan-btn" onclick="startScanner()">Start Camera</button>
-      <button class="btn-secondary" id="stop-btn" onclick="stopScanner()" style="display:none">Stop</button>
+
+    <div class="add-sub" id="sub-manual">
+      <div class="form-group">
+        <label>Artist / Band *</label>
+        <input type="text" id="m-artist" placeholder="e.g. Fleetwood Mac">
+      </div>
+      <div class="form-group">
+        <label>Album Title *</label>
+        <input type="text" id="m-title" placeholder="e.g. Rumours">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Year</label>
+          <input type="text" id="m-year" placeholder="e.g. 1977" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label>Label</label>
+          <input type="text" id="m-label" placeholder="e.g. Warner Bros.">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Barcode (optional)</label>
+        <input type="text" id="m-barcode" placeholder="13-digit barcode">
+      </div>
+      <button class="btn-primary" onclick="addManual()">Add to Collection</button>
     </div>
-    <div style="color:var(--muted);font-size:0.8rem;margin-bottom:0.75rem;">— or enter barcode manually —</div>
-    <div class="barcode-manual">
-      <input type="text" id="barcode-input" placeholder="e.g. 5099748235626" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.6rem 0.9rem;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;" onkeydown="if(event.key==='Enter')lookupBarcode()">
-      <button class="btn-primary" onclick="lookupBarcode()">Look Up</button>
-    </div>
-    <div id="loading-indicator"><span class="spinner"></span> Looking up barcode…</div>
-    <div class="scan-result" id="scan-result"></div>
   </div>
 
-  <!-- Confirm form after lookup -->
-  <div id="lookup-confirm" style="display:none;margin-top:1.5rem;">
-    <div class="lookup-preview show" id="lookup-preview"></div>
-    <div style="display:flex;gap:0.75rem;">
-      <button class="btn-primary" onclick="confirmLookup()">Add to Collection</button>
-      <button class="btn-secondary" onclick="editLookup()">Edit Details</button>
-      <button class="btn-secondary" onclick="cancelLookup()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- MANUAL SUB -->
-<div class="add-sub" id="sub-manual">
-  <div class="form-group">
-    <label>Artist / Band *</label>
-    <input type="text" id="m-artist" placeholder="e.g. Fleetwood Mac">
-  </div>
-  <div class="form-group">
-    <label>Album Title *</label>
-    <input type="text" id="m-title" placeholder="e.g. Rumours">
-  </div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Year</label>
-      <input type="text" id="m-year" placeholder="e.g. 1977" maxlength="4">
-    </div>
-    <div class="form-group">
-      <label>Label</label>
-      <input type="text" id="m-label" placeholder="e.g. Warner Bros.">
-    </div>
-  </div>
-  <div class="form-group">
-    <label>Barcode (optional)</label>
-    <input type="text" id="m-barcode" placeholder="13-digit barcode">
-  </div>
-  <button class="btn-primary" onclick="addManual()">Add to Collection</button>
-</div>
-```
-
-  </div>
-
-  <!-- ── DATA PANEL ── -->
-
+  <!-- ── BACKUP ── -->
   <div class="panel" id="panel-data">
+    <div class="data-info">
+      Your collection is saved in this browser on this device. <strong style="color:var(--text)">Export regularly</strong> to keep a backup — the backup file can be re-imported on any device or browser.
+    </div>
 
-```
-<div class="data-info">
-  Your collection is saved in this browser on this device. Back it up regularly — paste it into Notes or email it to yourself so you never lose it.
-</div>
+    <div class="data-section-title">Export</div>
+    <button class="btn-primary btn-large" onclick="exportJSON()">⬇ Export Collection File</button>
+    <div id="export-confirm" style="display:none;margin-top:0.75rem;margin-bottom:1rem;padding:0.9rem 1rem;background:var(--surface2);border:1px solid var(--success);border-left:3px solid var(--success);border-radius:8px;font-size:0.85rem;line-height:1.6;color:var(--text2);">
+      <div style="color:var(--success);font-weight:500;margin-bottom:0.25rem;">✓ Exported!</div>
+      Saved as <strong id="export-filename" style="font-family:monospace;font-size:0.8rem;color:var(--text);"></strong> — check your Downloads folder.
+    </div>
 
-<div class="data-section-title">Back Up Your Collection</div>
-<button class="btn-primary btn-large" onclick="copyBackup()">📋 Copy Collection to Clipboard</button>
-<div id="copy-confirm" style="display:none;margin-top:0.75rem;padding:0.9rem 1rem;background:var(--surface);border:1px solid var(--success);border-radius:2px;font-size:0.85rem;line-height:1.6;">
-  <div style="color:var(--success);font-weight:500;margin-bottom:0.3rem;">✓ Copied to clipboard!</div>
-  Your collection is now on the clipboard. Open Notes (or any app) and paste it in to keep it safe. You can restore from it any time using the section below.
-</div>
+    <div class="data-section-title" style="margin-top:1.5rem;">Import</div>
+    <p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.75rem;">Select a previously exported JSON file to restore or merge your collection.</p>
+    <button class="btn-secondary btn-large" onclick="document.getElementById('import-file').click()">⬆ Import Collection File</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(this)">
+    <div id="import-confirm" style="display:none;margin-top:0.75rem;padding:0.9rem 1rem;border-radius:8px;font-size:0.85rem;"></div>
 
-<div class="data-section-title" style="margin-top:1.75rem;">Restore from Backup</div>
-<p style="font-size:0.83rem;color:var(--muted);margin-bottom:0.75rem;">Paste your previously copied backup text into the box below, then tap Restore.</p>
-<textarea id="import-textarea" placeholder="Paste your backup here…" style="width:100%;height:120px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.75rem;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.85rem;resize:vertical;outline:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-<div style="margin-top:0.5rem;">
-  <button class="btn-primary btn-large" onclick="restoreFromText()">Restore Collection</button>
-</div>
-<div id="restore-result" style="display:none;margin-top:0.75rem;padding:0.9rem 1rem;border-radius:2px;font-size:0.85rem;"></div>
-
-<div class="data-section-title" style="margin-top:2rem;color:var(--danger);">Danger Zone</div>
-<button class="nav-btn danger btn-large" onclick="clearAll()">⚠ Clear Entire Collection</button>
-```
-
+    <div class="data-section-title" style="margin-top:2rem;color:var(--danger);">Danger Zone</div>
+    <button class="nav-btn danger btn-large" onclick="clearAll()" style="border-radius:8px;">⚠ Clear Entire Collection</button>
   </div>
 
 </main>
+
+<!-- ── EDIT MODAL ── -->
+<div class="modal-backdrop" id="edit-modal" onclick="closeEditModal(event)">
+  <div class="modal">
+    <div class="modal-title">Edit CD</div>
+    <input type="hidden" id="edit-id">
+    <div class="form-group">
+      <label>Artist / Band *</label>
+      <input type="text" id="edit-artist" placeholder="e.g. Fleetwood Mac">
+    </div>
+    <div class="form-group">
+      <label>Album Title *</label>
+      <input type="text" id="edit-title" placeholder="e.g. Rumours">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Year</label>
+        <input type="text" id="edit-year" placeholder="e.g. 1977" maxlength="4">
+      </div>
+      <div class="form-group">
+        <label>Label</label>
+        <input type="text" id="edit-label" placeholder="e.g. Warner Bros.">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Barcode</label>
+      <input type="text" id="edit-barcode" placeholder="13-digit barcode">
+    </div>
+    <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
+      <button class="btn-primary teal" onclick="saveEdit()">Save Changes</button>
+      <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -654,17 +604,10 @@ let pendingLookup = null;
 let scannerRunning = false;
 
 function load() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    catalogue = raw ? JSON.parse(raw) : [];
-  } catch(e) { catalogue = []; }
+  try { catalogue = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch(e) { catalogue = []; }
 }
-
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogue));
-  updateCount();
-}
-
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogue)); updateCount(); }
 function updateCount() {
   const n = catalogue.length;
   document.getElementById('header-count').textContent = n === 1 ? '1 disc' : `${n} discs`;
@@ -675,42 +618,44 @@ function showPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  const btns = document.querySelectorAll('.nav-btn');
   const idx = ['catalogue','add','data'].indexOf(name);
-  if (btns[idx]) btns[idx].classList.add('active');
+  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
   if (name === 'catalogue') renderCatalogue();
 }
 
-function switchAddTab(tab) {
+function switchAddTab(tab, btn) {
   document.querySelectorAll('.add-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.add-sub').forEach(s => s.classList.remove('active'));
   document.getElementById('sub-' + tab).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (tab !== 'scan') stopScanner();
 }
 
-function toast(msg, isError = false) {
+function toast(msg, type = '') {
   const el = document.getElementById('toast');
   el.textContent = msg;
-  el.className = 'toast show' + (isError ? ' error' : '');
+  el.className = 'toast show' + (type ? ' ' + type : '');
   clearTimeout(el._t);
-  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+  el._t = setTimeout(() => el.classList.remove('show'), 3200);
 }
 
-// ── CATALOGUE RENDER ──────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── CATALOGUE ─────────────────────────────────────────────────────────────────
 function renderCatalogue() {
-  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const q    = document.getElementById('search-input').value.trim().toLowerCase();
   const sort = document.getElementById('sort-select').value;
 
   let items = catalogue.filter(cd =>
     !q || cd.artist.toLowerCase().includes(q) || cd.title.toLowerCase().includes(q)
   );
-
-  items.sort((a, b) => {
-    if (sort === 'artist') return a.artist.localeCompare(b.artist) || a.title.localeCompare(b.title);
-    if (sort === 'title')  return a.title.localeCompare(b.title);
-    if (sort === 'year')   return (a.year || '9999').localeCompare(b.year || '9999');
-    return (b.added || 0) - (a.added || 0);
+  items.sort((a,b) => {
+    if (sort==='artist') return a.artist.localeCompare(b.artist) || a.title.localeCompare(b.title);
+    if (sort==='title')  return a.title.localeCompare(b.title);
+    if (sort==='year')   return (a.year||'9999').localeCompare(b.year||'9999');
+    return (b.added||0) - (a.added||0);
   });
 
   const listEl  = document.getElementById('cd-list');
@@ -718,47 +663,80 @@ function renderCatalogue() {
   const emptyEl = document.getElementById('empty-state');
 
   if (items.length === 0) {
-    listEl.style.display = 'none';
+    listEl.style.display  = 'none';
     emptyEl.style.display = 'block';
     return;
   }
   emptyEl.style.display = 'none';
-  listEl.style.display = 'block';
+  listEl.style.display  = 'block';
 
-  rowsEl.innerHTML = items.map((cd, i) => `
-    <div class="cd-row" data-index="${i}" data-id="${i}">
+  rowsEl.innerHTML = items.map(cd => `
+    <div class="cd-row">
       <div class="cd-row-artist">${esc(cd.artist)}</div>
       <div class="cd-row-title">${esc(cd.title)}</div>
       <div class="cd-row-year">${esc(cd.year)}</div>
       <div class="cd-row-label">${esc(cd.label)}</div>
-      <button class="cd-row-del" data-cdid="${esc(cd.id)}" title="Remove">×</button>
+      <div class="cd-row-actions">
+        <button class="cd-row-btn edit" data-cdid="${esc(cd.id)}" title="Edit">✏️</button>
+        <button class="cd-row-btn del"  data-cdid="${esc(cd.id)}" title="Delete">✕</button>
+      </div>
     </div>
   `).join('');
 }
 
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// Event delegation — handles all delete clicks safely regardless of ID content
+// Event delegation for edit + delete
 document.addEventListener('click', function(e) {
-  if (e.target.classList.contains('cd-row-del')) {
-    const id = e.target.getAttribute('data-cdid');
-    deleteCD(id);
-  }
+  const btn = e.target.closest('.cd-row-btn');
+  if (!btn) return;
+  const rawId = btn.getAttribute('data-cdid');
+  const id = rawId.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
+  if (btn.classList.contains('del'))  deleteCD(id);
+  if (btn.classList.contains('edit')) openEditModal(id);
 });
 
 function deleteCD(id) {
-  // Decode any HTML entities back to original value
-  const decoded = id.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
   if (!confirm('Remove this CD from your catalogue?')) return;
-  catalogue = catalogue.filter(cd => cd.id !== decoded);
-  save();
-  renderCatalogue();
+  catalogue = catalogue.filter(cd => cd.id !== id);
+  save(); renderCatalogue();
   toast('Removed from collection');
 }
 
-// ── BARCODE SCANNER ───────────────────────────────────────────────────────────
+// ── EDIT MODAL ────────────────────────────────────────────────────────────────
+function openEditModal(id) {
+  const cd = catalogue.find(c => c.id === id);
+  if (!cd) return;
+  document.getElementById('edit-id').value     = id;
+  document.getElementById('edit-artist').value = cd.artist;
+  document.getElementById('edit-title').value  = cd.title;
+  document.getElementById('edit-year').value   = cd.year   || '';
+  document.getElementById('edit-label').value  = cd.label  || '';
+  document.getElementById('edit-barcode').value= cd.barcode|| '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal(e) {
+  if (e && e.target !== document.getElementById('edit-modal')) return;
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+function saveEdit() {
+  const id     = document.getElementById('edit-id').value;
+  const artist = document.getElementById('edit-artist').value.trim();
+  const title  = document.getElementById('edit-title').value.trim();
+  if (!artist || !title) { toast('Artist and title are required', 'error'); return; }
+  const cd = catalogue.find(c => c.id === id);
+  if (!cd) return;
+  cd.artist  = artist;
+  cd.title   = title;
+  cd.year    = document.getElementById('edit-year').value.trim();
+  cd.label   = document.getElementById('edit-label').value.trim();
+  cd.barcode = document.getElementById('edit-barcode').value.trim();
+  save(); renderCatalogue();
+  document.getElementById('edit-modal').classList.remove('open');
+  toast('Changes saved', 'success');
+}
+
+// ── SCANNER ───────────────────────────────────────────────────────────────────
 function startScanner() {
   const viewport = document.getElementById('scanner-viewport');
   viewport.style.display = 'block';
@@ -768,21 +746,14 @@ function startScanner() {
 
   Quagga.init({
     inputStream: {
-      name: 'Live',
-      type: 'LiveStream',
-      target: viewport,
+      name: 'Live', type: 'LiveStream', target: viewport,
       constraints: { facingMode: 'environment', width: { min: 400 }, height: { min: 300 } }
     },
-    decoder: { readers: ['ean_reader', 'ean_8_reader', 'upc_reader', 'upc_e_reader'] },
+    decoder: { readers: ['ean_reader','ean_8_reader','upc_reader','upc_e_reader'] },
     locate: true
   }, err => {
-    if (err) {
-      showScanResult('Camera error: ' + err.message + '. Try entering the barcode manually.', false);
-      stopScanner();
-      return;
-    }
-    Quagga.start();
-    scannerRunning = true;
+    if (err) { showScanResult('Camera error: ' + err.message + '. Try entering the barcode manually.', false); stopScanner(); return; }
+    Quagga.start(); scannerRunning = true;
   });
 
   Quagga.offDetected();
@@ -795,58 +766,41 @@ function startScanner() {
 }
 
 function stopScanner() {
-  if (scannerRunning) {
-    try { Quagga.stop(); } catch(e){}
-    scannerRunning = false;
-  }
-  // Fully tear down the video element to avoid black screen residue
+  if (scannerRunning) { try { Quagga.stop(); } catch(e){} scannerRunning = false; }
   const viewport = document.getElementById('scanner-viewport');
   const video = viewport.querySelector('video');
   if (video) {
-    try {
-      if (video.srcObject) {
-        video.srcObject.getTracks().forEach(t => t.stop());
-        video.srcObject = null;
-      }
-    } catch(e) {}
+    try { if (video.srcObject) { video.srcObject.getTracks().forEach(t => t.stop()); video.srcObject = null; } } catch(e) {}
     video.remove();
   }
-  // Also remove any canvas Quagga injected
   viewport.querySelectorAll('canvas').forEach(c => c.remove());
   viewport.style.display = 'none';
   document.getElementById('scan-btn').style.display = 'inline-block';
   document.getElementById('stop-btn').style.display = 'none';
 }
 
-// ── BARCODE LOOKUP ────────────────────────────────────────────────────────────
+// ── LOOKUP ────────────────────────────────────────────────────────────────────
 async function lookupBarcode() {
   const barcode = document.getElementById('barcode-input').value.trim().replace(/\D/g,'');
-  if (!barcode) { toast('Please enter a barcode', true); return; }
-
+  if (!barcode) { toast('Please enter a barcode', 'error'); return; }
   document.getElementById('loading-indicator').style.display = 'block';
   document.getElementById('lookup-confirm').style.display = 'none';
   document.getElementById('scan-result').className = 'scan-result';
   pendingLookup = null;
-
   try {
-    // Try MusicBrainz first
     let data = await fetchMusicBrainz(barcode);
-    // Fallback: UPCitemdb (broader barcode coverage)
     if (!data) data = await fetchUPCitemdb(barcode);
-
     document.getElementById('loading-indicator').style.display = 'none';
-
     if (data) {
       pendingLookup = { ...data, barcode };
       showLookupPreview(data);
     } else {
-      showScanResult(`No match found for barcode ${barcode}. You can add it manually.`, false);
-      // Pre-fill manual tab
+      showScanResult(`No match found for barcode ${barcode}. Add it manually.`, false);
       document.getElementById('m-barcode').value = barcode;
     }
   } catch(e) {
     document.getElementById('loading-indicator').style.display = 'none';
-    showScanResult('Lookup failed — check your connection. Enter details manually.', false);
+    showScanResult('Lookup failed — check your connection.', false);
   }
 }
 
@@ -855,43 +809,38 @@ async function fetchMusicBrainz(barcode) {
   const resp = await fetch(url, { headers: { 'User-Agent': 'CDCatalogue/1.0 (personal)' } });
   if (!resp.ok) return null;
   const json = await resp.json();
-  if (!json.releases || json.releases.length === 0) return null;
+  if (!json.releases || !json.releases.length) return null;
   const r = json.releases[0];
-  const artist = r['artist-credit'] ? r['artist-credit'].map(a => a.name || (a.artist && a.artist.name) || '').filter(Boolean).join(', ') : '';
-  const year = r.date ? r.date.substring(0,4) : '';
-  const label = (r['label-info'] && r['label-info'][0] && r['label-info'][0].label) ? r['label-info'][0].label.name : '';
+  const artist = r['artist-credit'] ? r['artist-credit'].map(a => a.name||(a.artist&&a.artist.name)||'').filter(Boolean).join(', ') : '';
+  const year   = r.date ? r.date.substring(0,4) : '';
+  const label  = r['label-info']?.[0]?.label?.name || '';
   if (!artist && !r.title) return null;
-  return { artist: artist || 'Unknown Artist', title: r.title || 'Unknown Title', year, label };
+  return { artist: artist||'Unknown Artist', title: r.title||'Unknown Title', year, label };
 }
 
 async function fetchUPCitemdb(barcode) {
   try {
-    const url = `https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`;
-    const resp = await fetch(url);
+    const resp = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`);
     if (!resp.ok) return null;
     const json = await resp.json();
-    if (!json.items || json.items.length === 0) return null;
+    if (!json.items?.length) return null;
     const item = json.items[0];
-    // UPCitemdb returns a 'title' field — try to split into artist/album
-    // Format is often "Artist - Album Title" or just "Album Title"
     let artist = item.brand || '';
-    let title = item.title || '';
+    let title  = item.title || '';
     if (!artist && title.includes(' - ')) {
       const parts = title.split(' - ');
-      artist = parts[0].trim();
-      title = parts.slice(1).join(' - ').trim();
+      artist = parts[0].trim(); title = parts.slice(1).join(' - ').trim();
     }
     if (!title) return null;
-    return { artist: artist || 'Unknown Artist', title, year: '', label: '' };
+    return { artist: artist||'Unknown Artist', title, year:'', label:'' };
   } catch(e) { return null; }
 }
 
 function showLookupPreview(data) {
-  const prev = document.getElementById('lookup-preview');
-  prev.innerHTML = `
+  document.getElementById('lookup-preview').innerHTML = `
     <div class="lp-artist">${esc(data.artist)}</div>
     <div class="lp-title">${esc(data.title)}</div>
-    <div class="lp-meta">${[data.year, data.label].filter(Boolean).join(' · ') || 'Details found'}</div>
+    <div class="lp-meta">${[data.year, data.label].filter(Boolean).join(' · ') || 'Match found'}</div>
   `;
   document.getElementById('lookup-confirm').style.display = 'block';
   document.getElementById('scan-result').className = 'scan-result success show';
@@ -906,8 +855,7 @@ function showScanResult(msg, success) {
 
 function confirmLookup() {
   if (!pendingLookup) return;
-  addCD(pendingLookup);
-  pendingLookup = null;
+  addCD(pendingLookup); pendingLookup = null;
   document.getElementById('lookup-confirm').style.display = 'none';
   document.getElementById('barcode-input').value = '';
   document.getElementById('scan-result').className = 'scan-result';
@@ -915,14 +863,13 @@ function confirmLookup() {
 
 function editLookup() {
   if (!pendingLookup) return;
-  // Switch to manual, pre-fill
-  document.getElementById('m-artist').value = pendingLookup.artist || '';
-  document.getElementById('m-title').value = pendingLookup.title || '';
-  document.getElementById('m-year').value = pendingLookup.year || '';
-  document.getElementById('m-label').value = pendingLookup.label || '';
+  document.getElementById('m-artist').value  = pendingLookup.artist  || '';
+  document.getElementById('m-title').value   = pendingLookup.title   || '';
+  document.getElementById('m-year').value    = pendingLookup.year    || '';
+  document.getElementById('m-label').value   = pendingLookup.label   || '';
   document.getElementById('m-barcode').value = pendingLookup.barcode || '';
-  switchAddTab('manual');
   document.querySelectorAll('.add-tab')[1].click();
+  switchAddTab('manual', document.querySelectorAll('.add-tab')[1]);
   pendingLookup = null;
 }
 
@@ -935,118 +882,86 @@ function cancelLookup() {
 
 // ── MANUAL ADD ────────────────────────────────────────────────────────────────
 function addManual() {
-  const artist = document.getElementById('m-artist').value.trim();
-  const title  = document.getElementById('m-title').value.trim();
-  const year   = document.getElementById('m-year').value.trim();
-  const label  = document.getElementById('m-label').value.trim();
-  const barcode= document.getElementById('m-barcode').value.trim();
-  if (!artist || !title) { toast('Artist and title are required', true); return; }
+  const artist  = document.getElementById('m-artist').value.trim();
+  const title   = document.getElementById('m-title').value.trim();
+  const year    = document.getElementById('m-year').value.trim();
+  const label   = document.getElementById('m-label').value.trim();
+  const barcode = document.getElementById('m-barcode').value.trim();
+  if (!artist || !title) { toast('Artist and title are required', 'error'); return; }
   addCD({ artist, title, year, label, barcode });
-  document.getElementById('m-artist').value = '';
-  document.getElementById('m-title').value = '';
-  document.getElementById('m-year').value = '';
-  document.getElementById('m-label').value = '';
-  document.getElementById('m-barcode').value = '';
+  ['m-artist','m-title','m-year','m-label','m-barcode'].forEach(id => document.getElementById(id).value = '');
 }
 
 function addCD(data) {
-  // Check for duplicate barcode
   if (data.barcode && catalogue.some(cd => cd.barcode === data.barcode)) {
-    toast('You already have this one! — ' + (catalogue.find(c => c.barcode === data.barcode)||{artist:''}).artist, true);
+    const existing = catalogue.find(c => c.barcode === data.barcode);
+    toast(`Already in collection: ${existing.artist} — ${existing.title}`, 'error');
     return;
   }
-  const cd = {
-    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-    artist: data.artist,
-    title:  data.title,
-    year:   data.year  || '',
-    label:  data.label || '',
-    barcode: data.barcode || '',
-    added:  Date.now()
-  };
-  catalogue.push(cd);
-  save();
-  toast(`Added: ${cd.artist} — ${cd.title}`);
-}
-
-// ── BACKUP / RESTORE ─────────────────────────────────────────────────────────
-function copyBackup() {
-  if (catalogue.length === 0) { toast('Nothing to back up yet', true); return; }
-  const text = JSON.stringify({ version: 1, exported: new Date().toISOString(), catalogue }, null, 2);
-  navigator.clipboard.writeText(text).then(() => {
-    document.getElementById('copy-confirm').style.display = 'block';
-  }).catch(() => {
-    // Fallback for browsers that block clipboard API
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try {
-      document.execCommand('copy');
-      document.getElementById('copy-confirm').style.display = 'block';
-    } catch(e) {
-      toast('Could not copy — try holding down on the text area and choosing Copy', true);
-    }
-    document.body.removeChild(ta);
+  catalogue.push({
+    id:      Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    artist:  data.artist,
+    title:   data.title,
+    year:    data.year   || '',
+    label:   data.label  || '',
+    barcode: data.barcode|| '',
+    added:   Date.now()
   });
+  save();
+  toast(`Added: ${data.artist} — ${data.title}`, 'success');
 }
 
-function restoreFromText() {
-  const text = document.getElementById('import-textarea').value.trim();
-  const resultEl = document.getElementById('restore-result');
-  if (!text) {
-    resultEl.style.display = 'block';
-    resultEl.style.borderColor = 'var(--danger)';
-    resultEl.style.color = 'var(--danger)';
-    resultEl.style.background = 'var(--surface)';
-    resultEl.textContent = 'Please paste your backup text first.';
-    return;
-  }
-  try {
-    const data = JSON.parse(text);
-    const items = data.catalogue || (Array.isArray(data) ? data : null);
-    if (!items) throw new Error('This does not look like a valid backup.');
-    let added = 0;
-    items.forEach(cd => {
-      if (!cd.artist || !cd.title) return;
-      if (!cd.id) cd.id = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-      if (!catalogue.some(x => x.id === cd.id)) { catalogue.push(cd); added++; }
-    });
-    save();
-    renderCatalogue();
-    document.getElementById('import-textarea').value = '';
-    resultEl.style.display = 'block';
-    resultEl.style.background = 'var(--surface)';
-    resultEl.style.borderColor = 'var(--success)';
-    resultEl.style.color = 'var(--text)';
-    resultEl.innerHTML = '<span style="color:var(--success);font-weight:500;">✓ Restored!</span> Added ' + added + ' CDs. Collection now has ' + catalogue.length + ' in total.';
-  } catch(err) {
-    resultEl.style.display = 'block';
-    resultEl.style.background = 'var(--surface)';
-    resultEl.style.borderColor = 'var(--danger)';
-    resultEl.style.color = 'var(--danger)';
-    resultEl.textContent = 'Could not restore: ' + err.message;
-  }
+// ── EXPORT / IMPORT ───────────────────────────────────────────────────────────
+function exportJSON() {
+  if (!catalogue.length) { toast('Nothing to export yet', 'error'); return; }
+  const filename = 'cd-catalogue-' + new Date().toISOString().slice(0,10) + '.json';
+  const blob = new Blob([JSON.stringify({ version:1, exported: new Date().toISOString(), catalogue }, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  document.getElementById('export-confirm').style.display = 'block';
+  document.getElementById('export-filename').textContent = filename;
+}
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const resultEl = document.getElementById('import-confirm');
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      const items = data.catalogue || (Array.isArray(data) ? data : null);
+      if (!items) throw new Error('Unrecognised format.');
+      let added = 0;
+      items.forEach(cd => {
+        if (!cd.artist || !cd.title) return;
+        if (!cd.id) cd.id = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+        if (!catalogue.some(x => x.id === cd.id)) { catalogue.push(cd); added++; }
+      });
+      save(); renderCatalogue();
+      resultEl.style.cssText = 'display:block;padding:0.9rem 1rem;border-radius:8px;font-size:0.85rem;background:var(--surface2);border:1px solid var(--success);border-left:3px solid var(--success);color:var(--text2);';
+      resultEl.innerHTML = `<span style="color:var(--success);font-weight:500;">✓ Imported!</span> Added ${added} CDs. Collection now has ${catalogue.length} in total.`;
+    } catch(err) {
+      resultEl.style.cssText = 'display:block;padding:0.9rem 1rem;border-radius:8px;font-size:0.85rem;background:var(--surface2);border:1px solid var(--danger);color:var(--danger);';
+      resultEl.textContent = 'Import failed: ' + err.message;
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
 }
 
 function clearAll() {
-  const n = catalogue.length;
-  if (n === 0) { toast('Collection is already empty'); return; }
-  if (!confirm(`Delete all ${n} CDs from your catalogue? This cannot be undone.`)) return;
+  if (!catalogue.length) { toast('Collection is already empty'); return; }
+  if (!confirm(`Delete all ${catalogue.length} CDs? This cannot be undone.`)) return;
   catalogue = [];
   localStorage.removeItem(STORAGE_KEY);
-  updateCount();
-  renderCatalogue();
+  updateCount(); renderCatalogue();
   toast('Collection cleared');
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-load();
-renderCatalogue();
-updateCount();
+load(); renderCatalogue(); updateCount();
 </script>
-
 </body>
 </html>

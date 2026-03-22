@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CD Logger v0.2.1</title>
+<title>CD Logger v0.2.3</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
@@ -613,11 +613,12 @@
 
 <script>
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const CLIENT_ID   = '467117745013-5vd0ap9gab4gda8srqmllatj458v8se1.apps.googleusercontent.com';
-const FILE_ID     = '1eeXdZMzI64LbcuMmmit10ITHpGkWsIj_';
-const SCOPE       = 'https://www.googleapis.com/auth/drive.file';
-const STORAGE_KEY = 'cd_catalogue_v1';
-const TOKEN_KEY   = 'cd_logger_token';
+const CLIENT_ID    = '467117745013-5vd0ap9gab4gda8srqmllatj458v8se1.apps.googleusercontent.com';
+const DRIVE_FILE_NAME = 'cd-logger-catalogue.json';
+const SCOPE        = 'https://www.googleapis.com/auth/drive.file';
+const STORAGE_KEY  = 'cd_catalogue_v1';
+const TOKEN_KEY    = 'cd_logger_token';
+const FILE_ID_KEY  = 'cd_logger_file_id';
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let catalogue      = [];
@@ -625,6 +626,7 @@ let pendingLookup  = null;
 let scannerRunning = false;
 let stickyLocation = '';
 let accessToken    = null;
+let driveFileId    = null;
 let isSaving       = false;
 let saveQueued     = false;
 let offlineMode    = false;
@@ -649,8 +651,9 @@ function signIn() {
 
 function signOut() {
   if (accessToken) google.accounts.oauth2.revoke(accessToken);
-  accessToken = null;
-  offlineMode = false;
+  accessToken  = null;
+  driveFileId  = null;
+  offlineMode  = false;
   sessionStorage.removeItem(TOKEN_KEY);
   catalogue = [];
   document.getElementById('app').style.display = 'none';
@@ -700,22 +703,105 @@ function setSyncStatus(state, text) {
 }
 
 // ── DRIVE READ ────────────────────────────────────────────────────────────────
+// Search Drive for our file by name (only finds files this app created)
+async function findDriveFile() {
+  const name = encodeURIComponent(DRIVE_FILE_NAME);
+  const resp = await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'+and+trashed=false&spaces=drive&fields=files(id,name)`,
+    { headers: { 'Authorization': 'Bearer ' + accessToken } }
+  );
+  if (!resp.ok) throw new Error('Could not search Drive');
+  const data = await resp.json();
+  return (data.files && data.files.length > 0) ? data.files[0].id : null;
+}
+
+// Create a new empty catalogue file in Drive
+async function createDriveFile() {
+  const metadata = { name: DRIVE_FILE_NAME, mimeType: 'application/json' };
+  const body     = JSON.stringify({ version: 1, catalogue: [] });
+
+  // Use multipart upload to set name and content in one request
+  const boundary = 'cd_logger_boundary';
+  const multipart = [
+    '--' + boundary,
+    'Content-Type: application/json; charset=UTF-8',
+    '',
+    JSON.stringify(metadata),
+    '--' + boundary,
+    'Content-Type: application/json',
+    '',
+    body,
+    '--' + boundary + '--'
+  ].join('
+');
+
+  const resp = await fetch(
+    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'multipart/related; boundary=' + boundary
+      },
+      body: multipart
+    }
+  );
+  if (!resp.ok) throw new Error('Could not create Drive file');
+  const data = await resp.json();
+  return data.id;
+}
+
 async function loadFromDrive() {
-  setSyncStatus('syncing', 'Loading from Google Drive…');
+  setSyncStatus('syncing', 'Connecting to Google Drive…');
   try {
+    // Try stored file ID first, otherwise search, otherwise create
+    driveFileId = localStorage.getItem(FILE_ID_KEY) || null;
+
+    if (!driveFileId) {
+      setSyncStatus('syncing', 'Looking for collection file…');
+      driveFileId = await findDriveFile();
+    }
+
+    if (!driveFileId) {
+      setSyncStatus('syncing', 'Creating collection file…');
+      driveFileId = await createDriveFile();
+      localStorage.setItem(FILE_ID_KEY, driveFileId);
+      catalogue = [];
+      const t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      setSyncStatus('synced', `Ready — new file created at ${t}`);
+      return;
+    }
+
+    // File found — store ID locally and load content
+    localStorage.setItem(FILE_ID_KEY, driveFileId);
     const resp = await fetch(
-      `https://www.googleapis.com/drive/v3/files/${FILE_ID}?alt=media`,
+      `https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`,
       { headers: { 'Authorization': 'Bearer ' + accessToken } }
     );
-    if (!resp.ok) throw new Error('Could not read file');
-    const data = await resp.json();
-    catalogue = data.catalogue || [];
-    // Cache locally as fallback
+    if (!resp.ok) {
+      // Stored ID may be stale — clear it and try searching again
+      localStorage.removeItem(FILE_ID_KEY);
+      driveFileId = await findDriveFile();
+      if (!driveFileId) driveFileId = await createDriveFile();
+      localStorage.setItem(FILE_ID_KEY, driveFileId);
+      const resp2 = await fetch(
+        `https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`,
+        { headers: { 'Authorization': 'Bearer ' + accessToken } }
+      );
+      if (!resp2.ok) throw new Error('HTTP ' + resp2.status);
+      const data2 = await resp2.json();
+      catalogue = data2.catalogue || [];
+    } else {
+      const data = await resp.json();
+      catalogue = data.catalogue || [];
+    }
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(catalogue));
     const t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
     setSyncStatus('synced', `Synced at ${t}`);
+
   } catch(e) {
-    // Fall back to local cache
+    console.error('loadFromDrive failed:', e);
     try { catalogue = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch(e2) { catalogue = []; }
     setSyncStatus('error', 'Drive unavailable — using local cache');
     toast('Could not reach Google Drive — showing cached data', 'error');
@@ -733,8 +819,9 @@ async function saveToDrive() {
 
   try {
     const body = JSON.stringify({ version: 1, updated: new Date().toISOString(), catalogue }, null, 2);
+    if (!driveFileId) throw new Error('No file ID — try reloading');
     const resp = await fetch(
-      `https://www.googleapis.com/upload/drive/v3/files/${FILE_ID}?uploadType=media`,
+      `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
       {
         method: 'PATCH',
         headers: {
@@ -744,7 +831,11 @@ async function saveToDrive() {
         body
       }
     );
-    if (!resp.ok) throw new Error('Save failed');
+    if (!resp.ok) {
+      const errText = await resp.text();
+      console.error('Drive save error', resp.status, errText);
+      throw new Error('HTTP ' + resp.status);
+    }
     const t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
     setSyncStatus('synced', `Saved at ${t}`);
   } catch(e) {

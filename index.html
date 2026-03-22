@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CD Logger v0.2.3</title>
+<title>CD Logger v0.2.5</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
@@ -717,38 +717,37 @@ async function findDriveFile() {
 
 // Create a new empty catalogue file in Drive
 async function createDriveFile() {
-  const metadata = { name: DRIVE_FILE_NAME, mimeType: 'application/json' };
-  const body     = JSON.stringify({ version: 1, catalogue: [] });
-
-  // Use multipart upload to set name and content in one request
-  const boundary = 'cd_logger_boundary';
-  const multipart = [
-    '--' + boundary,
-    'Content-Type: application/json; charset=UTF-8',
-    '',
-    JSON.stringify(metadata),
-    '--' + boundary,
-    'Content-Type: application/json',
-    '',
-    body,
-    '--' + boundary + '--'
-  ].join('
-');
-
-  const resp = await fetch(
-    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+  // Step 1: create the file metadata (no content yet)
+  const metaResp = await fetch(
+    'https://www.googleapis.com/drive/v3/files?fields=id',
     {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + accessToken,
-        'Content-Type': 'multipart/related; boundary=' + boundary
+        'Content-Type': 'application/json'
       },
-      body: multipart
+      body: JSON.stringify({ name: DRIVE_FILE_NAME, mimeType: 'application/json' })
     }
   );
-  if (!resp.ok) throw new Error('Could not create Drive file');
-  const data = await resp.json();
-  return data.id;
+  if (!metaResp.ok) throw new Error('Could not create Drive file');
+  const meta = await metaResp.json();
+  const newId = meta.id;
+
+  // Step 2: upload the initial empty content
+  const body = JSON.stringify({ version: 1, catalogue: [] });
+  const uploadResp = await fetch(
+    'https://www.googleapis.com/upload/drive/v3/files/' + newId + '?uploadType=media',
+    {
+      method: 'PATCH',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json'
+      },
+      body: body
+    }
+  );
+  if (!uploadResp.ok) throw new Error('Could not initialise Drive file');
+  return newId;
 }
 
 async function loadFromDrive() {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CD Logger v0.2.5</title>
+<title>CD Logger v0.2.7</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
@@ -413,7 +413,8 @@
     background: var(--surface2); border: 1px solid var(--border2);
     color: var(--text); padding: 0.7rem 1.4rem; border-radius: 20px;
     font-size: 0.85rem; z-index: 9999; transition: transform 0.3s ease;
-    white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    white-space: normal; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    max-width: calc(100vw - 3rem); text-align: center;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.success { border-color: var(--success); color: var(--success); }
@@ -459,6 +460,7 @@
     </div>
     <div id="sync-user">
       <span id="sync-email"></span>
+      <button class="signout-btn" onclick="refreshFromDrive()" id="refresh-btn" title="Sync now">↻ Sync</button>
       <button class="signout-btn" onclick="signOut()">Sign out</button>
     </div>
   </div>
@@ -647,6 +649,18 @@ function signIn() {
     }
   });
   client.requestAccessToken();
+}
+
+async function refreshFromDrive() {
+  if (offlineMode) { toast('Not connected to Drive', 'error'); return; }
+  const btn = document.getElementById('refresh-btn');
+  btn.textContent = '↻ Syncing…';
+  btn.disabled = true;
+  await loadFromDrive();
+  renderCatalogue();
+  updateCount();
+  btn.textContent = '↻ Sync';
+  btn.disabled = false;
 }
 
 function signOut() {

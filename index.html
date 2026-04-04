@@ -671,6 +671,7 @@
 // ── CONFIG ────────────────────────────────────────────────────────────────────
 const CLIENT_ID    = '467117745013-5vd0ap9gab4gda8srqmllatj458v8se1.apps.googleusercontent.com';
 const DRIVE_FILE_NAME = 'cd-logger-catalogue.json';
+const SHARED_FILE_ID  = '1BdLiiLLiDpjUua00uadzVsWjuKLOILG4';
 const SCOPE        = 'https://www.googleapis.com/auth/drive.file';
 const STORAGE_KEY  = 'cd_catalogue_v1';
 const TOKEN_KEY    = 'cd_logger_token';
@@ -775,7 +776,7 @@ function setSyncStatus(state, text) {
 async function findDriveFile() {
   const name = encodeURIComponent(DRIVE_FILE_NAME);
   const resp = await fetch(
-    `https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'+and+trashed=false&spaces=drive&includeItemsFromAllDrives=true&supportsAllDrives=true&corpora=allDrives&fields=files(id,name)`,
+    `https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'+and+trashed=false&spaces=drive&fields=files(id,name)`,
     { headers: { 'Authorization': 'Bearer ' + accessToken } }
   );
   if (!resp.ok) throw new Error('Could not search Drive');
@@ -821,8 +822,8 @@ async function createDriveFile() {
 async function loadFromDrive() {
   setSyncStatus('syncing', 'Connecting to Google Drive…');
   try {
-    // Try stored file ID first, otherwise search, otherwise create
-    driveFileId = localStorage.getItem(FILE_ID_KEY) || null;
+    // Always use the shared file ID first — falls back to search if needed
+    driveFileId = SHARED_FILE_ID || localStorage.getItem(FILE_ID_KEY) || null;
 
     if (!driveFileId) {
       setSyncStatus('syncing', 'Looking for collection file…');

@@ -59,7 +59,9 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     min-height: 100vh; padding: 2rem; text-align: center;
+    position: relative; z-index: 1;
   }
+  #app { position: relative; z-index: 1; }
   #signin-screen .disc-icon {
     width: 64px; height: 64px; margin-bottom: 1.5rem;
     border-radius: 50%;
@@ -413,7 +415,7 @@
   /* Toast */
   .toast {
     position: fixed; bottom: 2rem; left: 50%;
-    transform: translateX(-50%) translateY(calc(100% + 3rem));
+    transform: translateX(-50%) translateY(80px);
     background: var(--surface2); border: 1px solid var(--border2);
     color: var(--text); padding: 0.7rem 1.4rem; border-radius: 20px;
     font-size: 0.85rem; z-index: 9999; transition: transform 0.3s ease;
@@ -429,9 +431,56 @@
     .form-row { grid-template-columns: 1fr; }
     main { padding: 1rem; }
   }
+
+  /* ── FLOATING CD WALLPAPER ── */
+  #cd-canvas {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .cd-float {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0s;
+  }
+  @keyframes cdFade {
+    0%   { opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cd-float { display: none; }
+  }
+
+  /* ── BACK TO TOP ── */
+  #back-to-top {
+    position: fixed; bottom: 5rem; right: 1.2rem;
+    width: 42px; height: 42px;
+    background: var(--surface2); border: 1px solid var(--accent);
+    border-radius: 50%; color: var(--accent);
+    font-size: 1.2rem; line-height: 42px; text-align: center;
+    cursor: pointer; z-index: 9000;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    user-select: none;
+  }
+  #back-to-top.visible {
+    opacity: 1; pointer-events: auto;
+  }
+  #back-to-top:active {
+    transform: scale(0.88);
+  }
 </style>
 </head>
 <body>
+
+<!-- ── FLOATING CD WALLPAPER ── -->
+<div id="cd-canvas"></div>
+
+<!-- ── BACK TO TOP ── -->
+<div id="back-to-top" title="Back to top">&#8679;</div>
 
 <!-- ── SIGN IN SCREEN ── -->
 <div id="signin-screen">
@@ -1252,6 +1301,85 @@ function clearAll() {
 // Check for existing session token
 window.addEventListener('load', () => {
   const cached = sessionStorage.getItem(TOKEN_KEY);
+  // ── FLOATING CD WALLPAPER ──
+  (function() {
+    const canvas = document.getElementById('cd-canvas');
+    const COUNT  = 9;
+    const COLOR  = 'rgba(232, 210, 120, 0.15)';
+    const STROKE = 'rgba(232, 210, 120, 0.28)';
+
+    function makeSVG(size) {
+      const r = size / 2, hole = r * 0.12, inner = r * 0.38;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+        <circle cx="${r}" cy="${r}" r="${r-1}" fill="none" stroke="${STROKE}" stroke-width="1.2"/>
+        <circle cx="${r}" cy="${r}" r="${inner}" fill="none" stroke="${COLOR}" stroke-width="0.8"/>
+        <circle cx="${r}" cy="${r}" r="${hole}" fill="none" stroke="${STROKE}" stroke-width="1"/>
+      </svg>`;
+    }
+
+    function rand(min, max) { return min + Math.random() * (max - min); }
+
+    function createCD() {
+      const size = 30 + Math.random() * 10;
+      const el = document.createElement('div');
+      el.className = 'cd-float';
+      el.innerHTML = makeSVG(size);
+      el.style.width  = size + 'px';
+      el.style.height = size + 'px';
+      canvas.appendChild(el);
+
+      const margin = 20;
+      const vw = () => window.innerWidth  - size - margin;
+      const vh = () => window.innerHeight - size - margin;
+
+      let x = rand(margin, vw());
+      let y = rand(margin, vh());
+      let tx = rand(margin, vw());
+      let ty = rand(margin, vh());
+      let angle = 0;
+      const speed = rand(0.15, 0.35);
+
+      const fadeDur   = rand(8, 14) * 1000;
+      const fadeDelay = rand(0, fadeDur);
+      el.style.animation = `cdFade ${fadeDur}ms ease-in-out ${-fadeDelay}ms infinite`;
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+
+      function move() {
+        const dx = tx - x;
+        const dy = ty - y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 2) {
+          tx = rand(margin, vw());
+          ty = rand(margin, vh());
+        } else {
+          x += (dx / dist) * speed;
+          y += (dy / dist) * speed;
+          angle += 0.06;
+          el.style.left      = x + 'px';
+          el.style.top       = y + 'px';
+          el.style.transform = `rotate(${angle}deg)`;
+        }
+        requestAnimationFrame(move);
+      }
+
+      setTimeout(move, rand(0, 2000));
+    }
+
+    for (let i = 0; i < COUNT; i++) createCD();
+  })();
+
+  // ── BACK TO TOP ──
+  (function() {
+    const btn = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+      btn.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+
   if (cached) {
     accessToken = cached;
     startApp();

@@ -415,7 +415,7 @@
   /* Toast */
   .toast {
     position: fixed; bottom: 2rem; left: 50%;
-    transform: translateX(-50%) translateY(80px);
+    transform: translateX(-50%) translateY(calc(100% + 3rem));
     background: var(--surface2); border: 1px solid var(--border2);
     color: var(--text); padding: 0.7rem 1.4rem; border-radius: 20px;
     font-size: 0.85rem; z-index: 9999; transition: transform 0.3s ease;
@@ -423,6 +423,7 @@
     max-width: calc(100vw - 3rem); text-align: center;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast:not(.show) { transform: translateX(-50%) translateY(calc(100% + 3rem)); }
   .toast.success { border-color: var(--success); color: var(--success); }
   .toast.error   { border-color: var(--danger);  color: var(--danger);  }
 
@@ -774,7 +775,7 @@ function setSyncStatus(state, text) {
 async function findDriveFile() {
   const name = encodeURIComponent(DRIVE_FILE_NAME);
   const resp = await fetch(
-    `https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'+and+trashed=false&spaces=drive&fields=files(id,name)`,
+    `https://www.googleapis.com/drive/v3/files?q=name='${DRIVE_FILE_NAME}'+and+trashed=false&spaces=drive&includeItemsFromAllDrives=true&supportsAllDrives=true&corpora=allDrives&fields=files(id,name)`,
     { headers: { 'Authorization': 'Bearer ' + accessToken } }
   );
   if (!resp.ok) throw new Error('Could not search Drive');

@@ -328,6 +328,13 @@
     outline: none; transition: border 0.15s, box-shadow 0.15s;
   }
   .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .form-group textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border2); color: var(--text);
+    padding: 0.65rem 1rem; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    outline: none; resize: vertical; transition: border 0.15s, box-shadow 0.15s;
+  }
+  .form-group textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
   /* Lookup preview */

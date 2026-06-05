@@ -376,6 +376,7 @@ function openEditModal(id) {
   document.getElementById('edit-label').value   = cd.label   || '';
   document.getElementById('edit-barcode').value = cd.barcode || '';
   document.getElementById('edit-location').value= cd.location|| '';
+  document.getElementById('edit-notes').value   = cd.notes   || '';
   document.getElementById('edit-modal').classList.add('open');
 }
 
@@ -397,6 +398,7 @@ function saveEdit() {
   cd.label    = document.getElementById('edit-label').value.trim();
   cd.barcode  = document.getElementById('edit-barcode').value.trim();
   cd.location = document.getElementById('edit-location').value.trim().toUpperCase();
+  cd.notes    = document.getElementById('edit-notes').value.trim();
   save(); renderCatalogue();
   document.getElementById('edit-modal').classList.remove('open');
   toast('Changes saved', 'success');
@@ -574,6 +576,7 @@ function addCD(data) {
     artist:   data.artist,   title:    data.title,
     year:     data.year   || '', label:    data.label   || '',
     barcode:  data.barcode|| '', location: data.location|| '',
+    notes:    data.notes   || '',
     added:    Date.now()
   });
   save();

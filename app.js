@@ -452,9 +452,17 @@ function stopScanner() {
 }
 
 // ── LOOKUP ────────────────────────────────────────────────────────────────────
+function normalizeBarcode(raw) {
+  const digits = raw.trim().replace(/\D/g,'');
+  if (!digits) return null;
+  if (digits.length < 12 || digits.length > 13) return null;
+  return digits.length === 12 ? '0' + digits : digits;
+}
+
 async function lookupBarcode() {
-  const barcode = document.getElementById('barcode-input').value.trim().replace(/\D/g,'');
-  if (!barcode) { toast('Please enter a barcode', 'error'); return; }
+  const raw     = document.getElementById('barcode-input').value;
+  const barcode = normalizeBarcode(raw);
+  if (!barcode) { toast('Barcode must be 12 or 13 digits', 'error'); return; }
   document.getElementById('loading-indicator').style.display = 'block';
   document.getElementById('lookup-confirm').style.display = 'none';
   document.getElementById('scan-result').className = 'scan-result';
@@ -568,14 +576,15 @@ function addManual() {
 }
 
 function addCD(data) {
-  if (data.barcode && catalogue.some(cd => cd.barcode === data.barcode)) {
+  const barcode = data.barcode ? normalizeBarcode(data.barcode) : '';
+  if (barcode && catalogue.some(cd => cd.barcode === barcode)) {
     toast('CD Already in Collection!', 'error'); return;
   }
   catalogue.push({
     id:       Date.now().toString(36) + Math.random().toString(36).slice(2,6),
     artist:   data.artist,   title:    data.title,
     year:     data.year   || '', label:    data.label   || '',
-    barcode:  data.barcode|| '', location: data.location|| '',
+    barcode:  barcode,      location: data.location|| '',
     notes:    data.notes   || '',
     added:    Date.now()
   });
